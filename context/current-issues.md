@@ -1,0 +1,3 @@
+After I sign-in to the app, when I click the Manage account button, a whitish/blurish foreground color appears on the editor behing the Manage account window. I've uploaded the picture in the chat so that you can see even clearly what I'm talking about. Fix that. I want the editors background color to be maintained no matter the feature or window I open.
+
+When I try signing-out, the Nextjs compiler at the buttom left corner of the page gets stuck on saying Redering..., until I manually refresh it the page myself before it completely gets me signed out. Fix that too

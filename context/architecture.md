@@ -2,20 +2,21 @@
 
 ## Stack
 
-| Layer     | Technology                  | Role   |
-| --------- | --------------------------- | ------ |
-| Framework | [e.g. Next.js + TypeScript] | [Role] |
-| UI        | [e.g. Tailwind + shadcn/ui] | [Role] |
-| Auth      | [e.g. Clerk]                | [Role] |
-| Database  | [e.g. Prisma + PostgreSQL]  | [Role] |
-| [Layer]   | [Technology]                | [Role] |
+| Layer     | Technology                 | Role                                 |
+| --------- | -------------------------- | ------------------------------------ |
+| Framework | Next.js 16 + TypeScript    | App Router, layouts, pages, proxy    |
+| UI        | Tailwind CSS + shadcn/ui   | Dark themed application components   |
+| Auth      | Clerk + `@clerk/ui` themes | Authentication, route protection, UI |
 
 ## System Boundaries
 
-- `[folder]` — [What this folder owns and is responsible for]
-- `[folder]` — [What this folder owns and is responsible for]
-- `[folder]` — [What this folder owns and is responsible for]
-- `[folder]` — [What this folder owns and is responsible for]
+- `app/` — Next.js routes and route-specific layouts.
+- `app/sign-in/` and `app/sign-up/` — public Clerk auth pages.
+- `app/editor/` — protected editor route tree wrapped by the editor chrome.
+- `components/editor/` — reusable editor navbar, sidebar, and editor layout shell.
+- `components/auth/` — reusable auth page presentation shell.
+- `components/ui/` — generated shadcn/ui primitives.
+- `proxy.ts` — root-level Clerk route protection for all matched requests.
 
 ## Storage Model
 
@@ -26,17 +27,15 @@
 
 ## Auth and Access Model
 
-- [How authentication works — e.g. Every user signs in
-  via Clerk]
-- [How ownership works — e.g. Every project has a single
-  owner]
-- [How access control works — e.g. Only the owner or a
-  collaborator can mutate project resources]
+- Clerk provides authentication through `ClerkProvider` in the root layout.
+- `/sign-in`, `/sign-up`, and `/` are public entry routes; `/` only redirects users based on auth state.
+- All other matched routes are protected by Clerk in `proxy.ts` by default.
+- Authenticated users are redirected from `/` to `/editor`; unauthenticated users are redirected to `/sign-in`.
+- The editor chrome exposes Clerk's default `UserButton` for profile settings and logout.
 
 ## Invariants
 
-1. [Rule the codebase must never violate — e.g. Request
-   handlers do not run long-lived background work]
-2. [Invariant two]
-3. [Invariant three]
-4. [Invariant four]
+1. Use `proxy.ts` for request protection; do not add `middleware.ts`.
+2. Keep Clerk auth UI on Clerk components and avoid rebuilding Clerk internals.
+3. Keep the editor shell under protected editor routes, not around public auth pages.
+4. Use existing Clerk environment variable names for auth URLs and keys.
