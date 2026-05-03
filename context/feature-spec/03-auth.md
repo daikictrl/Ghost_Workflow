@@ -8,7 +8,7 @@ Override Clerk appearance variables using the app's existing CSS variables. Don'
 
 ### Sign-in and sign-up pages:
 
-- Large screens: Simple two panel layout
+- Large screens: Simple "two" "panel" layout
 - left: compact logo, tagline, short text-only feature list
 - right: centered Clerk form
 - small screens: form only
