@@ -46,21 +46,25 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <ClerkProvider
-      appearance={clerkAppearance}
-      signInUrl={process.env.NEXT_PUBLIC_CLERK_SIGN_IN_URL ?? "/sign-in"}
-      signUpUrl={process.env.NEXT_PUBLIC_CLERK_SIGN_UP_URL ?? "/sign-up"}
-      afterSignOutUrl={process.env.NEXT_PUBLIC_CLERK_SIGN_IN_URL ?? "/sign-in"}
-      afterMultiSessionSingleSignOutUrl={
-        process.env.NEXT_PUBLIC_CLERK_SIGN_IN_URL ?? "/sign-in"
-      }
+    <html
+      lang="en"
+      className={`${geistSans.variable} ${geistMono.variable} dark h-full antialiased`}
     >
-      <html
-        lang="en"
-        className={`${geistSans.variable} ${geistMono.variable} dark h-full antialiased`}
-      >
-        <body className="min-h-full">{children}</body>
-      </html>
-    </ClerkProvider>
+      <body className="min-h-full">
+        <ClerkProvider
+          appearance={clerkAppearance}
+          signInUrl={process.env.NEXT_PUBLIC_CLERK_SIGN_IN_URL ?? "/sign-in"}
+          signUpUrl={process.env.NEXT_PUBLIC_CLERK_SIGN_UP_URL ?? "/sign-up"}
+          afterSignOutUrl={
+            process.env.NEXT_PUBLIC_CLERK_SIGN_IN_URL ?? "/sign-in"
+          }
+          afterMultiSessionSingleSignOutUrl={
+            process.env.NEXT_PUBLIC_CLERK_SIGN_IN_URL ?? "/sign-in"
+          }
+        >
+          {children}
+        </ClerkProvider>
+      </body>
+    </html>
   );
 }
