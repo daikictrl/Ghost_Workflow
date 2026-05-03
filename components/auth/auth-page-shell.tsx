@@ -10,6 +10,14 @@ const authFeatures = [
   "Profile and logout handled securely",
 ]
 
+/**
+ * Provides a two-column authentication page layout with a left marketing panel (visible on large screens) and a right, centered content area for form or interactive UI.
+ *
+ * @param title - Heading text displayed in the left marketing panel
+ * @param tagline - Subheading text displayed above the title in the left panel
+ * @param children - Content rendered in the right column (for example, sign-in or sign-up forms)
+ * @returns The React element for the authentication page shell
+ */
 function AuthPageShell({ title, tagline, children }: AuthPageShellProps) {
   return (
     <main className="min-h-dvh bg-background text-foreground lg:grid lg:grid-cols-[minmax(0,0.85fr)_minmax(0,1fr)]">

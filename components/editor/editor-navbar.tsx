@@ -12,6 +12,16 @@ type EditorNavbarProps = {
   className?: string
 }
 
+/**
+ * Renders the editor top navbar with a sidebar toggle and user account button.
+ *
+ * Renders a header containing a left-aligned sidebar toggle button (icon and ARIA state reflect `isSidebarOpen`), an empty center region, and a right-aligned Clerk `UserButton`. The `onSidebarToggle` callback is invoked when the toggle button is clicked.
+ *
+ * @param isSidebarOpen - Whether the projects sidebar is currently open; controls the toggle icon and `aria-pressed` state.
+ * @param onSidebarToggle - Click handler invoked to toggle the sidebar state.
+ * @param className - Optional additional CSS classes applied to the header container.
+ * @returns The navbar header element containing the toggle button and user button.
+ */
 function EditorNavbar({
   isSidebarOpen,
   onSidebarToggle,
