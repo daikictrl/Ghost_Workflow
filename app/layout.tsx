@@ -40,6 +40,12 @@ const clerkAppearance = {
   },
 };
 
+/**
+ * Root layout component that wraps the application with Clerk authentication and global styles.
+ *
+ * @param children - The page content to render inside the layout
+ * @returns The React element rendering the app wrapped in a `ClerkProvider` and an `html`/`body` scaffold with configured fonts and dark-theme classes
+ */
 export default function RootLayout({
   children,
 }: Readonly<{
