@@ -1,5 +1,7 @@
+import { cache } from "react"
 import { auth, currentUser } from "@clerk/nextjs/server"
 import { prisma } from "@/lib/prisma"
+import type { Project, ProjectCollaborator } from "@/app/generated/prisma/client"
 
 export interface UserIdentity {
   userId: string
@@ -29,14 +31,21 @@ export async function getUserIdentity(): Promise<UserIdentity | null> {
   return { userId, email }
 }
 
+type ProjectWithCollaborators = Project & { collaborators: ProjectCollaborator[] }
+
+type AccessResult =
+  | { hasAccess: true; project: ProjectWithCollaborators; identity: UserIdentity; error: null }
+  | { hasAccess: false; project: null; identity: UserIdentity | null; error: "unauthenticated" | "not_found" | "denied" | "error" }
+
 /**
  * Verifies if the authenticated user has access (as owner or collaborator)
- * to a project.
+ * to a project. Wrapped with React cache() to deduplicate within a single
+ * server request (e.g. generateMetadata + page component).
  */
-export async function checkProjectAccess(projectId: string) {
+export const checkProjectAccess = cache(async (projectId: string): Promise<AccessResult> => {
   const identity = await getUserIdentity()
   if (!identity) {
-    return { hasAccess: false, project: null, error: "unauthenticated" as const }
+    return { hasAccess: false, project: null, identity: null, error: "unauthenticated" }
   }
 
   const { userId, email } = identity
@@ -50,23 +59,23 @@ export async function checkProjectAccess(projectId: string) {
     })
 
     if (!project) {
-      return { hasAccess: false, project: null, error: "not_found" as const }
+      return { hasAccess: false, project: null, identity, error: "not_found" }
     }
 
     const isOwner = project.ownerId === userId
     const isCollaborator = email
       ? project.collaborators.some(
-          (c: any) => c.email.toLowerCase() === email.toLowerCase()
+          (c: ProjectCollaborator) => c.email.toLowerCase() === email.toLowerCase()
         )
       : false
 
     if (!isOwner && !isCollaborator) {
-      return { hasAccess: false, project: null, error: "denied" as const }
+      return { hasAccess: false, project: null, identity, error: "denied" }
     }
 
-    return { hasAccess: true, project, error: null }
+    return { hasAccess: true, project, identity, error: null }
   } catch (error) {
     console.error("Error checking project access:", error)
-    return { hasAccess: false, project: null, error: "error" as const }
+    return { hasAccess: false, project: null, identity, error: "error" }
   }
-}
+})

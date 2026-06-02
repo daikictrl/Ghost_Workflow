@@ -48,13 +48,19 @@ export function ShareDialog({ isOpen, onClose, projectId }: ShareDialogProps) {
 
   const [removingEmail, setRemovingEmail] = useState<string | null>(null)
   const [copied, setCopied] = useState(false)
+  const [shareUrl, setShareUrl] = useState(`/editor/${projectId}`)
+
+  // Compute full share URL after mount to avoid hydration mismatch
+  useEffect(() => {
+    setShareUrl(`${window.location.origin}/editor/${projectId}`)
+  }, [projectId])
 
   // Fetch collaborators list
-  const fetchCollaborators = async () => {
+  const fetchCollaborators = async (signal?: AbortSignal) => {
     setIsLoading(true)
     setError(null)
     try {
-      const response = await fetch(`/api/projects/${projectId}/collaborators`)
+      const response = await fetch(`/api/projects/${projectId}/collaborators`, { signal })
       if (!response.ok) {
         throw new Error("Failed to load project access list")
       }
@@ -63,6 +69,7 @@ export function ShareDialog({ isOpen, onClose, projectId }: ShareDialogProps) {
       setOwner(data.owner)
       setCollaborators(data.collaborators)
     } catch (err: any) {
+      if (err?.name === "AbortError") return
       console.error(err)
       setError(err?.message || "An unexpected error occurred")
     } finally {
@@ -72,11 +79,17 @@ export function ShareDialog({ isOpen, onClose, projectId }: ShareDialogProps) {
 
   useEffect(() => {
     if (isOpen && projectId) {
-      fetchCollaborators()
-      // Reset invitation status
+      // Clear stale state from previous project
+      setIsOwner(false)
+      setOwner(null)
+      setCollaborators([])
       setInviteEmail("")
       setInviteError(null)
       setInviteSuccess(false)
+
+      const controller = new AbortController()
+      fetchCollaborators(controller.signal)
+      return () => controller.abort()
     }
   }, [isOpen, projectId])
 
@@ -195,7 +208,7 @@ export function ShareDialog({ isOpen, onClose, projectId }: ShareDialogProps) {
             <Input
               type="text"
               readOnly
-              value={typeof window !== "undefined" ? `${window.location.origin}/editor/${projectId}` : `/editor/${projectId}`}
+              value={shareUrl}
               className="text-xs h-8 bg-muted/40 font-mono text-muted-foreground select-all focus-visible:ring-0"
             />
             <Button

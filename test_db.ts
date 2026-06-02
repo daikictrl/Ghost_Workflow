@@ -2,7 +2,7 @@ import "dotenv/config"
 import { prisma } from "./lib/prisma"
 
 async function main() {
-  console.log("Connecting using modified lib/prisma with dotenv/config...", process.env.DATABASE_URL)
+  console.log("Connecting to database...")
   const projects = await prisma.project.findMany({
     include: {
       collaborators: true

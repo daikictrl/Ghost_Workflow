@@ -1,6 +1,6 @@
 import { auth, clerkClient } from "@clerk/nextjs/server"
 import { prisma } from "@/lib/prisma"
-import { checkProjectAccess, getUserIdentity } from "@/lib/project-access"
+import { checkProjectAccess } from "@/lib/project-access"
 
 export async function GET(
   request: Request,
@@ -21,8 +21,7 @@ export async function GET(
   }
 
   const project = accessCheck.project
-  const identity = await getUserIdentity()
-  const isOwner = project.ownerId === identity?.userId
+  const isOwner = project.ownerId === accessCheck.identity.userId
 
   try {
     // 2. Fetch all collaborators from db
@@ -160,7 +159,7 @@ export async function POST(
     return Response.json({ error: "Invalid email address format" }, { status: 400 })
   }
 
-  // Verify the owner isn't inviting themselves
+  // Verify the owner isn't inviting themselves — fail closed on Clerk errors
   const client = await clerkClient()
   try {
     const clerkOwner = await client.users.getUser(project.ownerId)
@@ -170,6 +169,7 @@ export async function POST(
     }
   } catch (err) {
     console.error("Error fetching owner emails in invite:", err)
+    return Response.json({ error: "Unable to verify owner email" }, { status: 503 })
   }
 
   try {
@@ -250,17 +250,15 @@ export async function DELETE(
     return Response.json({ error: "Only the project owner can remove collaborators" }, { status: 403 })
   }
 
-  // Extract email from body first, then fallback to URL search params
-  let email = ""
+  // Accept email only from JSON body
+  let body: any = {}
   try {
-    const body = await request.json()
-    email = body?.email
+    body = await request.json()
   } catch {
-    // If not a JSON body, check search params
-    const url = new URL(request.url)
-    email = url.searchParams.get("email") || ""
+    return Response.json({ error: "Invalid JSON body" }, { status: 400 })
   }
 
+  const email = body?.email
   if (!email || typeof email !== "string" || !email.trim()) {
     return Response.json({ error: "Email is required" }, { status: 400 })
   }

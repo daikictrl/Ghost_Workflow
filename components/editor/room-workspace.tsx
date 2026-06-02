@@ -18,6 +18,12 @@ export function RoomWorkspace({ project }: RoomWorkspaceProps) {
   const { isAiSidebarOpen } = useProjects()
   const [input, setInput] = useState("")
 
+  const handleSend = () => {
+    if (!input.trim()) return
+    console.log("Send query to AI:", input)
+    setInput("")
+  }
+
   return (
     <div className="relative flex flex-1 min-h-0 overflow-hidden bg-background">
       {/* Central Canvas Area Placeholder */}
@@ -42,6 +48,8 @@ export function RoomWorkspace({ project }: RoomWorkspaceProps) {
 
       {/* Right Sidebar (AI Chat Assistant Placeholder) */}
       <aside
+        aria-hidden={!isAiSidebarOpen}
+        inert={!isAiSidebarOpen ? true : undefined}
         className={cn(
           "fixed top-18 bottom-4 right-4 z-40 flex w-[min(20rem,calc(100vw-2rem))] flex-col rounded-lg border border-border bg-popover/85 backdrop-blur-md text-popover-foreground shadow-xl shadow-background/40 transition-transform duration-250 ease-out",
           isAiSidebarOpen
@@ -72,9 +80,7 @@ export function RoomWorkspace({ project }: RoomWorkspaceProps) {
           <form
             onSubmit={(e) => {
               e.preventDefault()
-              if (!input.trim()) return
-              console.log("Send query to AI:", input)
-              setInput("")
+              handleSend()
             }}
             className="relative flex items-start"
           >
@@ -84,10 +90,7 @@ export function RoomWorkspace({ project }: RoomWorkspaceProps) {
               onKeyDown={(e) => {
                 if (e.key === "Enter" && !e.shiftKey) {
                   e.preventDefault()
-                  if (input.trim()) {
-                    console.log("Send query to AI:", input)
-                    setInput("")
-                  }
+                  handleSend()
                 }
               }}
               placeholder="Ask AI to design or modify..."
