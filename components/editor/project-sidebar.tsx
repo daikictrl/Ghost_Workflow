@@ -1,6 +1,7 @@
 "use client"
 
 import { Plus, X, Folder, Pencil, Trash2 } from "lucide-react"
+import { useParams, useRouter } from "next/navigation"
 
 import { Button } from "@/components/ui/button"
 import { ScrollArea } from "@/components/ui/scroll-area"
@@ -24,6 +25,9 @@ function EmptyProjectState() {
 
 function ProjectSidebar({ isOpen, onClose, className }: ProjectSidebarProps) {
   const { projects, openDialog } = useProjectActions()
+  const params = useParams()
+  const router = useRouter()
+  const roomId = params?.roomId as string | undefined
 
   const myProjects = projects.filter((p) => p.isOwned)
   const sharedProjects = projects.filter((p) => !p.isOwned)
@@ -75,37 +79,56 @@ function ProjectSidebar({ isOpen, onClose, className }: ProjectSidebarProps) {
                   <EmptyProjectState />
                 ) : (
                   <div className="space-y-1">
-                    {myProjects.map((project) => (
-                      <div
-                        key={project.id}
-                        className="group relative flex items-center justify-between rounded-lg px-3 py-2 text-sm font-medium text-secondary-foreground hover:bg-muted/40 transition-colors select-none"
-                      >
-                        <div className="flex items-center gap-2 min-w-0 pr-12">
-                          <Folder className="h-4 w-4 shrink-0 text-muted-foreground" />
-                          <span className="truncate">{project.name}</span>
+                    {myProjects.map((project) => {
+                      const isActive = project.id === roomId
+                      return (
+                        <div
+                          key={project.id}
+                          className={cn(
+                            "group relative flex items-center justify-between rounded-lg px-3 py-2 text-sm font-medium transition-colors select-none cursor-pointer border border-transparent",
+                            isActive
+                              ? "bg-muted/80 text-foreground border-border font-semibold shadow-xs"
+                              : "text-secondary-foreground hover:bg-muted/40"
+                          )}
+                          onClick={() => {
+                            if (!isActive) {
+                              router.push(`/editor/${project.id}`)
+                            }
+                          }}
+                        >
+                          <div className="flex items-center gap-2 min-w-0 pr-12">
+                            <Folder className="h-4 w-4 shrink-0 text-muted-foreground" />
+                            <span className="truncate">{project.name}</span>
+                          </div>
+                          <div className="absolute right-2 flex items-center gap-0.5 opacity-0 group-hover:opacity-100 transition-opacity">
+                            <Button
+                              type="button"
+                              variant="ghost"
+                              size="icon-xs"
+                              onClick={(e) => {
+                                e.stopPropagation()
+                                openDialog("rename", project)
+                              }}
+                              aria-label={`Rename project ${project.name}`}
+                            >
+                              <Pencil className="h-3 w-3 text-muted-foreground hover:text-foreground" />
+                            </Button>
+                            <Button
+                              type="button"
+                              variant="ghost"
+                              size="icon-xs"
+                              onClick={(e) => {
+                                e.stopPropagation()
+                                openDialog("delete", project)
+                              }}
+                              aria-label={`Delete project ${project.name}`}
+                            >
+                              <Trash2 className="h-3 w-3 text-destructive hover:text-destructive/80" />
+                            </Button>
+                          </div>
                         </div>
-                        <div className="absolute right-2 flex items-center gap-0.5 opacity-0 group-hover:opacity-100 transition-opacity">
-                          <Button
-                            type="button"
-                            variant="ghost"
-                            size="icon-xs"
-                            onClick={() => openDialog("rename", project)}
-                            aria-label={`Rename project ${project.name}`}
-                          >
-                            <Pencil className="h-3 w-3 text-muted-foreground hover:text-foreground" />
-                          </Button>
-                          <Button
-                            type="button"
-                            variant="ghost"
-                            size="icon-xs"
-                            onClick={() => openDialog("delete", project)}
-                            aria-label={`Delete project ${project.name}`}
-                          >
-                            <Trash2 className="h-3 w-3 text-destructive hover:text-destructive/80" />
-                          </Button>
-                        </div>
-                      </div>
-                    ))}
+                      )
+                    })}
                   </div>
                 )}
               </TabsContent>
@@ -114,15 +137,28 @@ function ProjectSidebar({ isOpen, onClose, className }: ProjectSidebarProps) {
                   <EmptyProjectState />
                 ) : (
                   <div className="space-y-1">
-                    {sharedProjects.map((project) => (
-                      <div
-                        key={project.id}
-                        className="flex items-center gap-2 rounded-lg px-3 py-2 text-sm font-medium text-secondary-foreground hover:bg-muted/40 transition-colors select-none"
-                      >
-                        <Folder className="h-4 w-4 shrink-0 text-muted-foreground" />
-                        <span className="truncate">{project.name}</span>
-                      </div>
-                    ))}
+                    {sharedProjects.map((project) => {
+                      const isActive = project.id === roomId
+                      return (
+                        <div
+                          key={project.id}
+                          className={cn(
+                            "flex items-center gap-2 rounded-lg px-3 py-2 text-sm font-medium transition-colors select-none cursor-pointer border border-transparent",
+                            isActive
+                              ? "bg-muted/80 text-foreground border-border font-semibold shadow-xs"
+                              : "text-secondary-foreground hover:bg-muted/40"
+                          )}
+                          onClick={() => {
+                            if (!isActive) {
+                              router.push(`/editor/${project.id}`)
+                            }
+                          }}
+                        >
+                          <Folder className="h-4 w-4 shrink-0 text-muted-foreground" />
+                          <span className="truncate">{project.name}</span>
+                        </div>
+                      )
+                    })}
                   </div>
                 )}
               </TabsContent>

@@ -13,6 +13,8 @@
 - [x] Project dialog components: Create (with live slugify preview), Rename (with prefilled auto-focus), and Delete (destructive confirmation only) (`components/editor/project-dialogs.tsx`)
 - [x] Project sidebar updates to display owned and shared tabs, wire actions, and add mobile backdrop click-outside scrim (`components/editor/project-sidebar.tsx`)
 - [x] Editor home page with New Project button (`app/editor/page.tsx`)
+- [x] Workspace routing and access checks (`/editor/[roomId]`) validating owners/collaborators against backend database projects (`lib/project-access.ts`, `app/editor/[roomId]/page.tsx`, `components/editor/access-denied.tsx`)
+- [x] Room workspace layout with central canvas, dynamic metadata titles, and toggleable sliding AI Chat sidebar (`components/editor/room-workspace.tsx`, `components/editor/editor-navbar.tsx`)
 
 ### Phase 3: Database & Persistence
 - [x] Database schema models: `Project` and `ProjectCollaborator` with correct relations, cascade delete, constraints, and indexes (`prisma/models/project.prisma`)
@@ -20,6 +22,16 @@
 - [x] Run database migrations and generate client types (`prisma/migrations`)
 - [x] Backend project API routes (`GET /api/projects`, `POST /api/projects`, `PATCH /api/projects/[projectId]`, `DELETE /api/projects/[projectId]`) enforcing Clerk auth and owner permissions
 - [x] Wired editor home screen dashboard, sidebar, and CRUD dialogs to the backend APIs with server-side layout fetching and Client Component state syncing
+
+### Phase 8: Editor Workspace Shell
+- [x] Main editor workspace layout with centered canvas, offsetting sliding panels, and responsive resizing boundaries
+- [x] Multiline scrollable AI assistant text area with Shift+Enter carriage returns and Enter submits
+
+### Phase 9: Project Collaboration & Share Dialog
+- [x] Project collaborator API endpoints for listing, inviting, and deleting collaborators (`app/api/projects/[projectId]/collaborators/route.ts`)
+- [x] Clerk integration to enrich database email records with display names and avatars
+- [x] Radix UI Share Dialog component with email invitation forms, collaborator removal controls, copy-to-clipboard actions, and visual loading states (`components/editor/share-dialog.tsx`)
+- [x] Integrated Share Dialog trigger and state management into editor navigation bar (`components/editor/editor-navbar.tsx`)
 
 ## Next Steps
 - [ ] Collaborative real-time canvas integration using Liveblocks and React Flow
