@@ -80,35 +80,44 @@ export function ProjectProvider({ children }: { children: React.ReactNode }) {
 
   const createProject = async (name: string, slug: string) => {
     setIsLoading(true)
-    await new Promise((resolve) => setTimeout(resolve, 500))
-    const newProject: Project = {
-      id: `proj_${Date.now()}`,
-      name,
-      slug,
-      isOwned: true,
-      createdAt: new Date().toISOString(),
+    try {
+      await new Promise((resolve) => setTimeout(resolve, 500))
+      const newProject: Project = {
+        id: crypto.randomUUID(),
+        name,
+        slug,
+        isOwned: true,
+        createdAt: new Date().toISOString(),
+      }
+      setProjects((prev) => [newProject, ...prev])
+      closeDialog()
+    } finally {
+      setIsLoading(false)
     }
-    setProjects((prev) => [newProject, ...prev])
-    setIsLoading(false)
-    closeDialog()
   }
 
   const renameProject = async (id: string, name: string, slug: string) => {
     setIsLoading(true)
-    await new Promise((resolve) => setTimeout(resolve, 500))
-    setProjects((prev) =>
-      prev.map((proj) => (proj.id === id ? { ...proj, name, slug } : proj))
-    )
-    setIsLoading(false)
-    closeDialog()
+    try {
+      await new Promise((resolve) => setTimeout(resolve, 500))
+      setProjects((prev) =>
+        prev.map((proj) => (proj.id === id ? { ...proj, name, slug } : proj))
+      )
+      closeDialog()
+    } finally {
+      setIsLoading(false)
+    }
   }
 
   const deleteProject = async (id: string) => {
     setIsLoading(true)
-    await new Promise((resolve) => setTimeout(resolve, 500))
-    setProjects((prev) => prev.filter((proj) => proj.id !== id))
-    setIsLoading(false)
-    closeDialog()
+    try {
+      await new Promise((resolve) => setTimeout(resolve, 500))
+      setProjects((prev) => prev.filter((proj) => proj.id !== id))
+      closeDialog()
+    } finally {
+      setIsLoading(false)
+    }
   }
 
   return (

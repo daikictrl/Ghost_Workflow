@@ -14,7 +14,12 @@
 - [x] Project sidebar updates to display owned and shared tabs, wire actions, and add mobile backdrop click-outside scrim (`components/editor/project-sidebar.tsx`)
 - [x] Editor home page with New Project button (`app/editor/page.tsx`)
 
+### Phase 3: Database & Persistence
+- [x] Database schema models: `Project` and `ProjectCollaborator` with correct relations, cascade delete, constraints, and indexes (`prisma/models/project.prisma`)
+- [x] Cached Prisma Client singleton with dynamic branching logic supporting direct pg and Accelerate connections (`lib/prisma.ts`)
+- [x] Run database migrations and generate client types (`prisma/migrations`)
+
 ## Next Steps
 - [ ] Collaborative real-time canvas integration using Liveblocks and React Flow
-- [ ] Database persistence layer using Prisma and PostgreSQL
 - [ ] AI architecture generation background workflows using Trigger.dev
+
