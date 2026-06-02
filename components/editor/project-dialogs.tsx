@@ -1,7 +1,8 @@
 "use client"
 
 import React, { useState } from "react"
-import { useProjects, slugify, type Project } from "@/lib/project-context"
+import { slugify, type Project } from "@/lib/project-context"
+import { useProjectActions } from "@/hooks/use-project-actions"
 import {
   Dialog,
   DialogContent,
@@ -78,7 +79,7 @@ function CreateForm({
 }
 
 function CreateProjectDialog() {
-  const { activeDialog, closeDialog, createProject, isLoading } = useProjects()
+  const { activeDialog, closeDialog, createProject, isLoading } = useProjectActions()
 
   return (
     <Dialog open={activeDialog === "create"} onOpenChange={(open) => !open && closeDialog()}>
@@ -164,7 +165,7 @@ function RenameForm({ project, onClose, onRename, isLoading }: RenameFormProps) 
 }
 
 function RenameProjectDialog() {
-  const { activeDialog, selectedProject, closeDialog, renameProject, isLoading } = useProjects()
+  const { activeDialog, selectedProject, closeDialog, renameProject, isLoading } = useProjectActions()
 
   return (
     <Dialog open={activeDialog === "rename"} onOpenChange={(open) => !open && closeDialog()}>
@@ -189,7 +190,7 @@ function RenameProjectDialog() {
 }
 
 function DeleteProjectDialog() {
-  const { activeDialog, selectedProject, closeDialog, deleteProject, isLoading } = useProjects()
+  const { activeDialog, selectedProject, closeDialog, deleteProject, isLoading } = useProjectActions()
 
   const handleDelete = async () => {
     if (!selectedProject) return

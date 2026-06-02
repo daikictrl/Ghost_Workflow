@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button"
 import { ScrollArea } from "@/components/ui/scroll-area"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { cn } from "@/lib/utils"
-import { useProjects } from "@/lib/project-context"
+import { useProjectActions } from "@/hooks/use-project-actions"
 
 type ProjectSidebarProps = {
   isOpen: boolean
@@ -23,7 +23,7 @@ function EmptyProjectState() {
 }
 
 function ProjectSidebar({ isOpen, onClose, className }: ProjectSidebarProps) {
-  const { projects, openDialog } = useProjects()
+  const { projects, openDialog } = useProjectActions()
 
   const myProjects = projects.filter((p) => p.isOwned)
   const sharedProjects = projects.filter((p) => !p.isOwned)
