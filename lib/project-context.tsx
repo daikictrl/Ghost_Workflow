@@ -1,6 +1,7 @@
 "use client"
 
-import React, { createContext, useContext, useState } from "react"
+import React, { createContext, useContext, useState, useEffect } from "react"
+import { useRouter } from "next/navigation"
 
 export interface Project {
   id: string
@@ -8,6 +9,8 @@ export interface Project {
   slug: string
   isOwned: boolean
   createdAt: string
+  status?: string
+  description?: string | null
 }
 
 interface ProjectContextType {
@@ -24,49 +27,23 @@ interface ProjectContextType {
 
 const ProjectContext = createContext<ProjectContextType | undefined>(undefined)
 
-const INITIAL_PROJECTS: Project[] = [
-  {
-    id: "proj_1",
-    name: "E-Commerce Microservices",
-    slug: "e-commerce-microservices",
-    isOwned: true,
-    createdAt: "2026-05-15T10:00:00Z",
-  },
-  {
-    id: "proj_2",
-    name: "Real-time Chat App",
-    slug: "real-time-chat-app",
-    isOwned: true,
-    createdAt: "2026-05-20T14:30:00Z",
-  },
-  {
-    id: "proj_3",
-    name: "Data Analytics Pipeline",
-    slug: "data-analytics-pipeline",
-    isOwned: true,
-    createdAt: "2026-05-28T09:15:00Z",
-  },
-  {
-    id: "proj_4",
-    name: "Company Landing Page",
-    slug: "company-landing-page",
-    isOwned: false,
-    createdAt: "2026-05-10T12:00:00Z",
-  },
-  {
-    id: "proj_5",
-    name: "Auth Service Architecture",
-    slug: "auth-service-architecture",
-    isOwned: false,
-    createdAt: "2026-05-22T16:45:00Z",
-  },
-]
-
-export function ProjectProvider({ children }: { children: React.ReactNode }) {
-  const [projects, setProjects] = useState<Project[]>(INITIAL_PROJECTS)
+export function ProjectProvider({
+  children,
+  initialProjects = [],
+}: {
+  children: React.ReactNode
+  initialProjects?: Project[]
+}) {
+  const router = useRouter()
+  const [projects, setProjects] = useState<Project[]>(initialProjects)
   const [activeDialog, setActiveDialog] = useState<"create" | "rename" | "delete" | null>(null)
   const [selectedProject, setSelectedProject] = useState<Project | null>(null)
   const [isLoading, setIsLoading] = useState(false)
+
+  // Keep state in sync with server-side page updates
+  useEffect(() => {
+    setProjects(initialProjects)
+  }, [initialProjects])
 
   const openDialog = (type: "create" | "rename" | "delete", project?: Project) => {
     setSelectedProject(project || null)
@@ -81,16 +58,24 @@ export function ProjectProvider({ children }: { children: React.ReactNode }) {
   const createProject = async (name: string, slug: string) => {
     setIsLoading(true)
     try {
-      await new Promise((resolve) => setTimeout(resolve, 500))
-      const newProject: Project = {
-        id: crypto.randomUUID(),
-        name,
-        slug,
-        isOwned: true,
-        createdAt: new Date().toISOString(),
+      // Generate client-side custom ID (slugify(name)-suffix) to align with Liveblocks room ID
+      const randomSuffix = Math.random().toString(36).substring(2, 8)
+      const projectId = `${slugify(name)}-${randomSuffix}`
+
+      const res = await fetch("/api/projects", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ id: projectId, name }),
+      })
+      if (!res.ok) {
+        throw new Error("Failed to create project")
       }
-      setProjects((prev) => [newProject, ...prev])
+      const data = await res.json()
+      setProjects((prev) => [data, ...prev])
       closeDialog()
+      router.refresh()
+    } catch (error) {
+      console.error("Failed to create project:", error)
     } finally {
       setIsLoading(false)
     }
@@ -99,11 +84,22 @@ export function ProjectProvider({ children }: { children: React.ReactNode }) {
   const renameProject = async (id: string, name: string, slug: string) => {
     setIsLoading(true)
     try {
-      await new Promise((resolve) => setTimeout(resolve, 500))
+      const res = await fetch(`/api/projects/${id}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ name }),
+      })
+      if (!res.ok) {
+        throw new Error("Failed to rename project")
+      }
+      const data = await res.json()
       setProjects((prev) =>
-        prev.map((proj) => (proj.id === id ? { ...proj, name, slug } : proj))
+        prev.map((proj) => (proj.id === id ? data : proj))
       )
       closeDialog()
+      router.refresh()
+    } catch (error) {
+      console.error("Failed to rename project:", error)
     } finally {
       setIsLoading(false)
     }
@@ -112,9 +108,17 @@ export function ProjectProvider({ children }: { children: React.ReactNode }) {
   const deleteProject = async (id: string) => {
     setIsLoading(true)
     try {
-      await new Promise((resolve) => setTimeout(resolve, 500))
+      const res = await fetch(`/api/projects/${id}`, {
+        method: "DELETE",
+      })
+      if (!res.ok) {
+        throw new Error("Failed to delete project")
+      }
       setProjects((prev) => prev.filter((proj) => proj.id !== id))
       closeDialog()
+      router.refresh()
+    } catch (error) {
+      console.error("Failed to delete project:", error)
     } finally {
       setIsLoading(false)
     }

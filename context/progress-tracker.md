@@ -18,6 +18,8 @@
 - [x] Database schema models: `Project` and `ProjectCollaborator` with correct relations, cascade delete, constraints, and indexes (`prisma/models/project.prisma`)
 - [x] Cached Prisma Client singleton with dynamic branching logic supporting direct pg and Accelerate connections (`lib/prisma.ts`)
 - [x] Run database migrations and generate client types (`prisma/migrations`)
+- [x] Backend project API routes (`GET /api/projects`, `POST /api/projects`, `PATCH /api/projects/[projectId]`, `DELETE /api/projects/[projectId]`) enforcing Clerk auth and owner permissions
+- [x] Wired editor home screen dashboard, sidebar, and CRUD dialogs to the backend APIs with server-side layout fetching and Client Component state syncing
 
 ## Next Steps
 - [ ] Collaborative real-time canvas integration using Liveblocks and React Flow

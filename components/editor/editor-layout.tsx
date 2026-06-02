@@ -4,19 +4,20 @@ import { useState } from "react"
 
 import { EditorNavbar } from "@/components/editor/editor-navbar"
 import { ProjectSidebar } from "@/components/editor/project-sidebar"
-import { ProjectProvider } from "@/lib/project-context"
+import { ProjectProvider, type Project } from "@/lib/project-context"
 import { ProjectDialogs } from "@/components/editor/project-dialogs"
 import { cn } from "@/lib/utils"
 
 type EditorLayoutProps = {
   children: React.ReactNode
+  initialProjects?: Project[]
 }
 
-function EditorLayout({ children }: EditorLayoutProps) {
+function EditorLayout({ children, initialProjects }: EditorLayoutProps) {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false)
 
   return (
-    <ProjectProvider>
+    <ProjectProvider initialProjects={initialProjects}>
       <div className="flex min-h-dvh flex-col bg-background text-foreground">
         <EditorNavbar
           isSidebarOpen={isSidebarOpen}
