@@ -18,11 +18,14 @@ interface ProjectContextType {
   activeDialog: "create" | "rename" | "delete" | null
   selectedProject: Project | null
   isLoading: boolean
+  isAiSidebarOpen: boolean
   openDialog: (type: "create" | "rename" | "delete", project?: Project) => void
   closeDialog: () => void
   createProject: (name: string, slug: string) => Promise<void>
   renameProject: (id: string, name: string, slug: string) => Promise<void>
   deleteProject: (id: string) => Promise<void>
+  setAiSidebarOpen: (open: boolean) => void
+  toggleAiSidebar: () => void
 }
 
 const ProjectContext = createContext<ProjectContextType | undefined>(undefined)
@@ -39,6 +42,9 @@ export function ProjectProvider({
   const [activeDialog, setActiveDialog] = useState<"create" | "rename" | "delete" | null>(null)
   const [selectedProject, setSelectedProject] = useState<Project | null>(null)
   const [isLoading, setIsLoading] = useState(false)
+  const [isAiSidebarOpen, setIsAiSidebarOpen] = useState(false)
+
+  const toggleAiSidebar = () => setIsAiSidebarOpen((prev) => !prev)
 
   // Keep state in sync with server-side page updates
   useEffect(() => {
@@ -131,11 +137,14 @@ export function ProjectProvider({
         activeDialog,
         selectedProject,
         isLoading,
+        isAiSidebarOpen,
         openDialog,
         closeDialog,
         createProject,
         renameProject,
         deleteProject,
+        setAiSidebarOpen: setIsAiSidebarOpen,
+        toggleAiSidebar,
       }}
     >
       {children}
