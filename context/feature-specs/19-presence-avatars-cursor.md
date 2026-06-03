@@ -36,7 +36,7 @@ without changing the editor home navbar.
    - add a subtle ring so avatars stay readable on the dark canvas
 
 4. Add live cursors to the canvas.
-   - render cursors for other participants only, never the
+   - render cursors for other participants ONLY, never the
      current user
    - use the existing Liveblocks presence state to broadcast
      cursor position

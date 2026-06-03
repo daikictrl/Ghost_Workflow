@@ -30,6 +30,12 @@ export async function POST(request: Request) {
       if (access.error === "unauthenticated") {
         return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
       }
+      if (access.error === "error") {
+        return NextResponse.json({ error: "Internal server error checking project access" }, { status: 500 });
+      }
+      if (access.error === "not_found") {
+        return NextResponse.json({ error: "Project not found" }, { status: 404 });
+      }
       return NextResponse.json({ error: "Forbidden" }, { status: 403 });
     }
 
