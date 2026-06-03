@@ -65,28 +65,34 @@ export async function DELETE(
   { params }: { params: Promise<{ projectId: string }> }
 ) {
   const { userId } = await auth()
+  console.log("[DELETE DEBUG] Authenticated userId:", userId)
   if (!userId) {
     return Response.json({ error: "Unauthorized" }, { status: 401 })
   }
 
   const { projectId } = await params
+  console.log("[DELETE DEBUG] Resolved projectId from params:", projectId)
 
   try {
     const project = await prisma.project.findUnique({
       where: { id: projectId },
     })
+    console.log("[DELETE DEBUG] Project found in DB:", project)
 
     if (!project) {
+      console.log("[DELETE DEBUG] Returning 404: project not found in database for ID:", projectId)
       return Response.json({ error: "Project not found" }, { status: 404 })
     }
 
     if (project.ownerId !== userId) {
+      console.log("[DELETE DEBUG] Returning 403: project ownerId", project.ownerId, "does not match userId", userId)
       return Response.json({ error: "Forbidden" }, { status: 403 })
     }
 
     await prisma.project.delete({
       where: { id: projectId },
     })
+    console.log("[DELETE DEBUG] Project successfully deleted")
 
     return Response.json({ success: true })
   } catch (error) {

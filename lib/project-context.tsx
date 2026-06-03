@@ -19,12 +19,14 @@ interface ProjectContextType {
   selectedProject: Project | null
   isLoading: boolean
   isAiSidebarOpen: boolean
+  isTemplatesModalOpen: boolean
   openDialog: (type: "create" | "rename" | "delete", project?: Project) => void
   closeDialog: () => void
   createProject: (name: string, slug: string) => Promise<void>
   renameProject: (id: string, name: string, slug: string) => Promise<void>
   deleteProject: (id: string) => Promise<void>
   setAiSidebarOpen: (open: boolean) => void
+  setTemplatesModalOpen: (open: boolean) => void
   toggleAiSidebar: () => void
 }
 
@@ -43,6 +45,7 @@ export function ProjectProvider({
   const [selectedProject, setSelectedProject] = useState<Project | null>(null)
   const [isLoading, setIsLoading] = useState(false)
   const [isAiSidebarOpen, setIsAiSidebarOpen] = useState(false)
+  const [isTemplatesModalOpen, setTemplatesModalOpen] = useState(false)
 
   const toggleAiSidebar = () => setIsAiSidebarOpen((prev) => !prev)
 
@@ -120,9 +123,25 @@ export function ProjectProvider({
       if (!res.ok) {
         throw new Error("Failed to delete project")
       }
-      setProjects((prev) => prev.filter((proj) => proj.id !== id))
+      
+      const isCurrentProject =
+        typeof window !== "undefined" &&
+        (window.location.pathname === `/editor/${id}` ||
+          window.location.pathname.endsWith(`/${id}`))
+
+      const remaining = projects.filter((proj) => proj.id !== id)
+      setProjects(remaining)
       closeDialog()
-      router.refresh()
+
+      if (isCurrentProject) {
+        if (remaining.length > 0) {
+          router.push(`/editor/${remaining[0].id}`)
+        } else {
+          router.push("/editor")
+        }
+      } else {
+        router.refresh()
+      }
     } catch (error) {
       console.error("Failed to delete project:", error)
     } finally {
@@ -138,12 +157,14 @@ export function ProjectProvider({
         selectedProject,
         isLoading,
         isAiSidebarOpen,
+        isTemplatesModalOpen,
         openDialog,
         closeDialog,
         createProject,
         renameProject,
         deleteProject,
         setAiSidebarOpen: setIsAiSidebarOpen,
+        setTemplatesModalOpen,
         toggleAiSidebar,
       }}
     >

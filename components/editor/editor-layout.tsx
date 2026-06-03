@@ -18,7 +18,7 @@ function EditorLayout({ children, initialProjects }: EditorLayoutProps) {
 
   return (
     <ProjectProvider initialProjects={initialProjects}>
-      <div className="flex min-h-dvh flex-col bg-background text-foreground">
+      <div className="flex h-dvh flex-col bg-background text-foreground overflow-hidden">
         <EditorNavbar
           isSidebarOpen={isSidebarOpen}
           onSidebarToggle={() => setIsSidebarOpen((isOpen) => !isOpen)}
@@ -30,8 +30,8 @@ function EditorLayout({ children, initialProjects }: EditorLayoutProps) {
           />
           <div
             className={cn(
-              "flex flex-col flex-1 min-h-0 overflow-auto transition-[padding] duration-200 ease-out",
-              isSidebarOpen ? "md:pl-[22rem]" : "md:pl-0"
+              "flex flex-col flex-1 min-h-0 h-full transition-[margin] duration-250 ease-out",
+              isSidebarOpen ? "md:ml-[22rem]" : "md:ml-0"
             )}
           >
             {children}

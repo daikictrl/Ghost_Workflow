@@ -1,4 +1,4 @@
-Add a bottom shape panel so users can drag shapes onto the canvas and create new nodes.
+Add a bottom shape panel so users can drag shapes onto the canvas. Make sure to make the panel collapsible but not hidden and create new nodes.
 
 ## Implementation
 

@@ -2,7 +2,7 @@
 
 import React, { useState } from "react"
 import { UserButton } from "@clerk/nextjs"
-import { PanelLeftClose, PanelLeftOpen, Share2, Sparkles, Home } from "lucide-react"
+import { PanelLeftClose, PanelLeftOpen, Share2, Sparkles, Home, LayoutTemplate } from "lucide-react"
 import { useParams, useRouter } from "next/navigation"
 
 import { Button } from "@/components/ui/button"
@@ -25,7 +25,7 @@ function EditorNavbar({
   const params = useParams()
   const router = useRouter()
   const roomId = params?.roomId as string | undefined
-  const { projects, isAiSidebarOpen, toggleAiSidebar } = useProjects()
+  const { projects, isAiSidebarOpen, toggleAiSidebar, setTemplatesModalOpen } = useProjects()
   const [isShareOpen, setIsShareOpen] = useState(false)
 
   const currentProject = roomId ? projects.find((p) => p.id === roomId) : null
@@ -75,6 +75,17 @@ function EditorNavbar({
         <div className="flex min-w-0 flex-1 items-center justify-end gap-2">
           {currentProject && (
             <>
+              <Button
+                type="button"
+                variant="outline"
+                size="sm"
+                className="gap-1.5 text-xs h-8"
+                onClick={() => setTemplatesModalOpen(true)}
+              >
+                <LayoutTemplate className="h-3.5 w-3.5" />
+                <span>Templates</span>
+              </Button>
+
               <Button
                 type="button"
                 variant="outline"
