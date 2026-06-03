@@ -115,6 +115,13 @@
 - [x] Registered fallback schema in `liveblocks.config.ts` and set `initialStorage` in `room-workspace.tsx` for type-safety
 - [x] Verified full type-safety and successful clean production build
 
+### Phase 20: Stability & Quality Improvements (Bug Fixes)
+- [x] Secured `app/api/liveblocks-auth/route.ts` by adding explicit project access validation (checking if the user is the project owner or listed in collaborators) before permitting room access
+- [x] Resolved room storage reset/overwrite during reconnection or remounting in `components/editor/room-workspace.tsx` using a `<RoomStorageInitializer>` wrapper to perform a read-before-write validation on map keys
+- [x] Resolved undo/redo history sync mismatch by migrating `components/editor/collaborative-canvas.tsx` and `components/editor/control-bar.tsx` from deprecated standalone hooks (`useUndo`/`useRedo`/`useCanUndo`/`useCanRedo`) to a single synchronized `useHistory()` context
+- [x] Audited performance selectors to guarantee no broad/unoptimized `useStorage` or `useOthers` hooks exist in client code, ensuring maximum render performance
+- [x] Verified full type-safety and successful Next.js production build compilation
+
 ## Next Steps
 - [ ] AI architecture generation background workflows using Trigger.dev
 

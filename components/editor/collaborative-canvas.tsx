@@ -10,7 +10,7 @@ import {
   useReactFlow,
 } from "@xyflow/react"
 import { useLiveblocksFlow, Cursors } from "@liveblocks/react-flow"
-import { useUndo, useRedo, useCanUndo, useCanRedo, useMutation } from "@liveblocks/react/suspense"
+import { useHistory, useMutation } from "@liveblocks/react/suspense"
 import { LiveObject } from "@liveblocks/client"
 import { useProjects } from "@/lib/project-context"
 import { StarterTemplatesModal } from "./starter-templates-modal"
@@ -62,10 +62,7 @@ function CollaborativeCanvasInner() {
   const reactFlowInstance = useReactFlow()
   const { screenToFlowPosition, fitView } = reactFlowInstance
   
-  const undo = useUndo()
-  const redo = useRedo()
-  const canUndo = useCanUndo()
-  const canRedo = useCanRedo()
+  const history = useHistory()
 
   const { isTemplatesModalOpen, setTemplatesModalOpen } = useProjects()
 
@@ -114,10 +111,10 @@ function CollaborativeCanvasInner() {
 
   useKeyboardShortcuts({
     reactFlowInstance,
-    undo,
-    redo,
-    canUndo,
-    canRedo,
+    undo: useCallback(() => history.undo(), [history]),
+    redo: useCallback(() => history.redo(), [history]),
+    canUndo: history.canUndo(),
+    canRedo: history.canRedo(),
   })
 
   const menuRef = useRef<HTMLDivElement>(null)

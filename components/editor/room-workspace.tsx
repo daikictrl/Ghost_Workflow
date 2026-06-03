@@ -1,6 +1,8 @@
 "use client"
 
 import { LiveblocksProvider, RoomProvider, ClientSideSuspense } from "@liveblocks/react/suspense"
+import { useEffect } from "react"
+import { useMutation } from "@liveblocks/react/suspense"
 import { LiveObject, LiveMap } from "@liveblocks/client"
 import { CanvasErrorBoundary } from "./canvas-error-boundary"
 import { CanvasErrorFallback } from "./canvas-error-fallback"
@@ -13,6 +15,35 @@ interface RoomWorkspaceProps {
     name: string
     description?: string | null
   }
+}
+
+function RoomStorageInitializer({ children }: { children: React.ReactNode }) {
+  const initializeStorage = useMutation(({ storage }) => {
+    const flow = storage.get("flow")
+    if (!flow) {
+      storage.set(
+        "flow",
+        new LiveObject({
+          nodes: new LiveMap(),
+          edges: new LiveMap(),
+        })
+      )
+    } else {
+      // Ensure nested properties exist as well
+      if (!flow.get("nodes")) {
+        flow.set("nodes", new LiveMap())
+      }
+      if (!flow.get("edges")) {
+        flow.set("edges", new LiveMap())
+      }
+    }
+  }, [])
+
+  useEffect(() => {
+    initializeStorage()
+  }, [initializeStorage])
+
+  return <>{children}</>
 }
 
 export function RoomWorkspace({ project }: RoomWorkspaceProps) {
@@ -34,7 +65,9 @@ export function RoomWorkspace({ project }: RoomWorkspaceProps) {
         >
           <CanvasErrorBoundary fallback={(error, reset) => <CanvasErrorFallback error={error} reset={reset} />}>
             <ClientSideSuspense fallback={<CanvasLoadingState />}>
-              <CollaborativeWorkspace project={project} />
+              <RoomStorageInitializer>
+                <CollaborativeWorkspace project={project} />
+              </RoomStorageInitializer>
             </ClientSideSuspense>
           </CanvasErrorBoundary>
         </RoomProvider>

@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect, useRef } from "react"
 import { useReactFlow, useViewport } from "@xyflow/react"
-import { useUndo, useRedo, useCanUndo, useCanRedo } from "@liveblocks/react/suspense"
+import { useHistory } from "@liveblocks/react/suspense"
 import { ZoomIn, ZoomOut, Maximize, Undo2, Redo2 } from "lucide-react"
 import { cn } from "@/lib/utils"
 
@@ -18,10 +18,11 @@ const PRESETS = [
 export function ControlBar() {
   const { zoomIn, zoomOut, fitView, zoomTo } = useReactFlow()
   const { zoom } = useViewport()
-  const undo = useUndo()
-  const redo = useRedo()
-  const canUndo = useCanUndo()
-  const canRedo = useCanRedo()
+  const history = useHistory()
+  const undo = () => history.undo()
+  const redo = () => history.redo()
+  const canUndo = history.canUndo()
+  const canRedo = history.canRedo()
 
   const containerRef = useRef<HTMLDivElement>(null)
   const inputRef = useRef<HTMLInputElement>(null)

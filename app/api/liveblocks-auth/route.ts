@@ -18,12 +18,29 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: "Missing or invalid room parameter" }, { status: 400 });
     }
 
+    // Fetch user details from Clerk
+    const user = await currentUser();
+    if (!user) {
+      return NextResponse.json({ error: "Failed to fetch user details" }, { status: 401 });
+    }
+
     // 1 & 2. Verify project access
     const access = await checkProjectAccess(projectId);
-    if (!access.hasAccess) {
+    if (!access.hasAccess || !access.project) {
       if (access.error === "unauthenticated") {
         return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
       }
+      return NextResponse.json({ error: "Forbidden" }, { status: 403 });
+    }
+
+    // Explicit check that the requesting user owns or is a member of the requested room
+    const isOwner = access.project.ownerId === user.id;
+    const userEmails = user.emailAddresses.map((e) => e.emailAddress.toLowerCase());
+    const isCollaborator = access.project.collaborators.some(
+      (c) => userEmails.includes(c.email.toLowerCase())
+    );
+
+    if (!isOwner && !isCollaborator) {
       return NextResponse.json({ error: "Forbidden" }, { status: 403 });
     }
 
@@ -35,12 +52,6 @@ export async function POST(request: Request) {
     } catch (roomError) {
       console.error("Failed to get or create Liveblocks room:", roomError);
       return NextResponse.json({ error: "Internal room initialization error" }, { status: 500 });
-    }
-
-    // Fetch user details from Clerk
-    const user = await currentUser();
-    if (!user) {
-      return NextResponse.json({ error: "Failed to fetch user details" }, { status: 401 });
     }
 
     // Resolve name with fallbacks
