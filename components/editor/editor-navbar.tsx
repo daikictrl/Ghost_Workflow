@@ -25,7 +25,7 @@ function EditorNavbar({
   const params = useParams()
   const router = useRouter()
   const roomId = params?.roomId as string | undefined
-  const { projects, isAiSidebarOpen, toggleAiSidebar, setTemplatesModalOpen } = useProjects()
+  const { projects, isAiSidebarOpen, toggleAiSidebar, setTemplatesModalOpen, canvasSaveStatus } = useProjects()
   const [isShareOpen, setIsShareOpen] = useState(false)
 
   const currentProject = roomId ? projects.find((p) => p.id === roomId) : null
@@ -79,6 +79,38 @@ function EditorNavbar({
                 type="button"
                 variant="outline"
                 size="sm"
+                disabled={canvasSaveStatus === "saving"}
+                className={cn(
+                  "gap-1.5 text-xs h-8 transition-all duration-300 select-none",
+                  canvasSaveStatus === "error" && "border-rose-500/50 hover:bg-rose-500/10 text-rose-400"
+                )}
+                onClick={() => window.dispatchEvent(new CustomEvent("trigger-canvas-save"))}
+              >
+                {canvasSaveStatus === "saving" && (
+                  <span className="relative flex h-1.5 w-1.5 mr-0.5">
+                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-sky-400 opacity-75"></span>
+                    <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-sky-500"></span>
+                  </span>
+                )}
+                {canvasSaveStatus === "saved" && (
+                  <span className="h-1.5 w-1.5 rounded-full bg-emerald-500 mr-0.5" />
+                )}
+                {canvasSaveStatus === "error" && (
+                  <span className="h-1.5 w-1.5 rounded-full bg-rose-500 animate-pulse mr-0.5" />
+                )}
+                <span>
+                  {canvasSaveStatus === "saving"
+                    ? "Saving..."
+                    : canvasSaveStatus === "error"
+                    ? "Error (Retry)"
+                    : "Saved"}
+                </span>
+              </Button>
+
+              <Button
+                type="button"
+                variant="outline"
+                size="sm"
                 className="gap-1.5 text-xs h-8"
                 onClick={() => setTemplatesModalOpen(true)}
               >
@@ -113,7 +145,7 @@ function EditorNavbar({
               </Button>
             </>
           )}
-          <UserButton />
+          {!currentProject && <UserButton />}
         </div>
       </header>
       {currentProject && (

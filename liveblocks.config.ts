@@ -5,11 +5,13 @@ declare global {
     // Each user's Presence, for useMyPresence, useOthers, etc.
     Presence: {
       cursor: { x: number; y: number } | null;
-      isThinking: boolean;
+      thinking: boolean;
     };
 
     Storage: {
       flow: any;
+      "ai-status-feed"?: any;
+      "ai-chat"?: any;
     };
 
     // Custom user info set when authenticating with a secret key

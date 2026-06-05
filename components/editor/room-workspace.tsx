@@ -3,7 +3,7 @@
 import { LiveblocksProvider, RoomProvider, ClientSideSuspense } from "@liveblocks/react/suspense"
 import { useEffect } from "react"
 import { useMutation } from "@liveblocks/react/suspense"
-import { LiveObject, LiveMap } from "@liveblocks/client"
+import { LiveObject, LiveMap, LiveList } from "@liveblocks/client"
 import { CanvasErrorBoundary } from "./canvas-error-boundary"
 import { CanvasErrorFallback } from "./canvas-error-fallback"
 import { CanvasLoadingState } from "./canvas-loading-state"
@@ -37,6 +37,13 @@ function RoomStorageInitializer({ children }: { children: React.ReactNode }) {
         flow.set("edges", new LiveMap())
       }
     }
+
+    if (!storage.get("ai-status-feed")) {
+      storage.set("ai-status-feed", new LiveList([]))
+    }
+    if (!storage.get("ai-chat")) {
+      storage.set("ai-chat", new LiveList([]))
+    }
   }, [])
 
   useEffect(() => {
@@ -54,13 +61,15 @@ export function RoomWorkspace({ project }: RoomWorkspaceProps) {
           id={project.id}
           initialPresence={{
             cursor: null,
-            isThinking: false,
+            thinking: false,
           }}
           initialStorage={{
             flow: new LiveObject({
               nodes: new LiveMap(),
               edges: new LiveMap(),
             }),
+            "ai-status-feed": new LiveList([]),
+            "ai-chat": new LiveList([]),
           }}
         >
           <CanvasErrorBoundary fallback={(error, reset) => <CanvasErrorFallback error={error} reset={reset} />}>

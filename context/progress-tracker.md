@@ -27,6 +27,12 @@
 ### Phase 8: Editor Workspace Shell
 - [x] Main editor workspace layout with centered canvas, offsetting sliding panels, and responsive resizing boundaries
 - [x] Multiline scrollable AI assistant text area with Shift+Enter carriage returns and Enter submits
+- [x] Implemented dedicated interactive AI Sidebar component (`components/editor/ai-sidebar.tsx`) replacing the placeholder
+- [x] Added tabbed interface separating the AI Architect chat assistant and Markdown System Specifications
+- [x] Designed responsive empty states, clickable starter prompts, user vs assistant message layouts, and dynamic auto-resizing textareas
+- [x] Optimized layout and spacing of empty state (logo, description, prompts) to fit perfectly on all viewports without scrolling, rendering it inside a standard non-scrollable div to bypass ScrollArea scrollbars on Brave/WebKit browsers
+- [x] Integrated specification generation triggers and card previews with disabled download features
+
 
 ### Phase 9: Project Collaboration & Share Dialog
 - [x] Project collaborator API endpoints for listing, inviting, and deleting collaborators (`app/api/projects/[projectId]/collaborators/route.ts`)
@@ -123,9 +129,122 @@
 - [x] Audited performance selectors to guarantee no broad/unoptimized `useStorage` or `useOthers` hooks exist in client code, ensuring maximum render performance
 - [x] Verified full type-safety and successful Next.js production build compilation
 
+### Phase 21: Presence Avatars & Live Cursors
+- [x] Updated Liveblocks `Presence` definition (`liveblocks.config.ts`) and initial state (`room-workspace.tsx`) to support `thinking: boolean` and `cursor` coordinates
+- [x] Created custom `PresenceAvatars` component absolute-positioned inside the editor room view (`components/editor/presence-avatars.tsx`)
+- [x] Integrated Clerk `useUser` and `UserButton` to represent the current user at size `28px` to align perfectly with collaborator avatars
+- [x] Managed list of active participants, deduplicated by user ID, filtered out the current user, and limited overlap stack display to 5 with an overflow chip
+- [x] Suppressed navbar-level `UserButton` inside the room view while keeping it active in the editor home dashboard (`components/editor/editor-navbar.tsx`)
+- [x] Hooked mouse/pointer-movement tracking on React Flow pane, projecting coords using `screenToFlowPosition` and clearing cursor to null on mouse leave (`components/editor/collaborative-canvas.tsx`)
+- [x] Styled custom small, modern cursors with participant presence colors and tiny name badge pills
+- [x] Verified successful production compilation with zero TypeScript or build errors via `npm run build`
+
+### Phase 22: Canvas Autosave & Loading
+- [x] Installed `@vercel/blob` dependency for cloud file storage
+- [x] Added `canvasSaveStatus` state and setter to `ProjectProvider` (`lib/project-context.tsx`)
+- [x] Implemented API endpoints `GET` and `PUT` at `/api/projects/[projectId]/canvas` using Clerk authentication, project access controls, and private Vercel Blob storage persistence (utilizing the SDK's type-safe `get()` method with cache-busting suffixes and async deletion of old blobs)
+- [x] Created debounced autosave React hook (`hooks/use-canvas-autosave.ts`) to track canvas modifications and dispatch manual trigger events
+- [x] Updated editor navbar (`components/editor/editor-navbar.tsx`) to show real-time save states ("Saved", "Saving...", "Error (Retry)") and dispatch manual trigger events
+- [x] Updated collaborative workspace and canvas components (`components/editor/collaborative-workspace.tsx`, `components/editor/collaborative-canvas.tsx`) to fetch and load saved state if the room is empty on mount
+- [x] Generalised right-click context menu in `<ReactFlow />` (`onSelectionContextMenu`) to show a dynamic "Delete Selected (N)" option when multiple elements are selected
+- [x] Configured global window event listeners in `hooks/use-keyboard-shortcuts.ts` to trigger selection deletion when pressing `Backspace` or `Delete` on active canvas components
+- [x] Verified full type-safety and successful production build with zero compilation errors
+
+### Phase 23: Trigger.dev Setup
+- [x] Installed pinned version of `@trigger.dev/sdk@4.4.6`
+- [x] Configured `trigger.config.ts` with project identifier `proj_tgggziraaqcgbemiivke`, default node runtime, and execution timeout parameters
+- [x] Created `trigger/` task directory with sample `helloWorldTask` background job inside `trigger/example.ts`
+- [x] Appended `TRIGGER_SECRET_KEY` env placeholder to project `.env`
+- [x] Successfully verified task worker bundler and task discovery daemon build via `npx trigger.dev dev`
+
+### Phase 24: Design Agent API & Trigger Wiring
+- [x] Created `TaskRun` database model in `prisma/models/task_run.prisma` to track background execution runs and verify ownership.
+- [x] Generated database migration and regenerated Prisma Client to synchronize models.
+- [x] Created `design-agent` task in `trigger/design-agent.ts` with basic log/echo behavior.
+- [x] Implemented route `POST /api/ai/design` validating user credentials, checking workspace access, scheduling the background task, and storing the run tracker.
+- [x] Implemented route `POST /api/ai/design/token` issuing scoped read-only public tokens restricted to specific run and task IDs for client-side subscription.
+- [x] Verified full type-safety and successful production compilation.
+
+### Phase 25: Design Agent Logic & Collaborative Simulation
+- [x] Defined Zod validation schemas (`AiStatusMessageSchema` and `AiChatMessageSchema`) in `types/tasks.ts`
+- [x] Initialized collaborative status and chat feeds in `RoomProvider` storage and schema definitions (`components/editor/room-workspace.tsx`, `liveblocks.config.ts`)
+- [x] Implemented multi-key Google AI failover model client in `lib/google-failover.ts` with automatic rate-limit rotation
+- [x] Completed trigger task runner in `trigger/design-agent.ts` with step-by-step element rendering, presence/cursor updates, status updates, and final assistant recap messages
+- [x] Verified full type-safety and successful clean Next.js build compilation
+
+### Phase 26: AI Presence State
+- [x] Subscribed to Liveblocks storage `ai-status-feed` in AI Sidebar and validated latest messages with `AiStatusMessageSchema`
+- [x] Added dynamic status indicator strip to sidebar chat area displaying active AI generation states
+- [x] Disabled chat input and rendered loading spinner on Send button during active generation
+- [x] Updated collaborative canvas `CustomCursor` component to display a thinking spinner inside collaborator badges when `thinking: true` is present
+
+### Phase 27: Sidebar Collaborative Chat Feed
+- [x] Subscribed to Liveblocks storage `ai-chat` in AI Sidebar and validated messages with Zod `AiChatMessageSchema`
+- [x] Rendered own messages on right, collaborators and assistant on left with formatted timestamps and sender name badges
+- [x] Wired input form to Liveblocks `useMutation` to push user messages onto the room storage list
+- [x] Handled error state boundary during submission failure and styled error warnings in the input footer
+- [x] Verified full type-safety and successful clean Next.js build compilation
+
+### Phase 28: Design Agent Frontend & API Integration
+- [x] Updated design API endpoint (`app/api/ai/design/route.ts`) to return run-scoped public tokens and support optional `projectId`.
+- [x] Integrated `useRealtimeRun` in `components/editor/ai-sidebar.tsx` to track execution terminal states and errors.
+- [x] Wired `handleSend` to submit user prompt, handle submission failures, and track background run IDs.
+- [x] Custom styled user chat messages with green accent (`#62C073`) background and contrast dark text.
+- [x] Styled submit button and status indicator strip to use green accents and custom spinner states.
+- [x] Fixed stale status feed behavior by introducing client-side `clearStatusFeed` mutation on prompt submission.
+- [x] Resolved Prisma database `TaskRun` undefined error by regenerating Prisma Client in `app/generated/prisma`.
+- [x] Excluded `"ai-agent"` from top-right collaborator avatar list in `PresenceAvatars` to avoid duplicate avatar confusion.
+- [x] Fixed chat message bubble overflow and scrollbar overlapping in AI Sidebar by shifting ScrollArea padding inwards and applying `break-words` and `min-w-0` layout wraps.
+- [x] Fixed loading spinner and input block lockup on fast or instant task completions (like conversational prompts) by using a centralized React `useEffect` to watch terminal run states, handling both transitions and already-completed run mounts.
+- [x] Updated canvas node dimensions to be larger (roughly double) and increased custom node label font size from 12.1px to 13.5px for improved text readability.
+- [x] Aligned manual shape templates in the editor shape panel with the new, larger default node sizes.
+- [x] Resolved missing edge labels by supporting root-level `label` props in `CustomEdge` and updating `design-agent` to write labels under both root `label` and `data.label` paths.
+- [x] Refactored design agent spacing instructions to lay out nodes compactly (240px-280px center-to-center) and mandated descriptive connection labels in Gemini prompts.
+- [x] Verified full type-safety and successful clean Next.js build compilation.
+
+### Phase 29: Spec Generation Flow
+- [x] Created `POST /api/ai/spec` — validates input with Zod, resolves project from `roomId` only (no client-supplied `projectId`), triggers `generate-spec` task, persists `TaskRun` record, returns `runId` and run-scoped public token
+- [x] Created `POST /api/ai/spec/token` — validates `runId`, verifies `TaskRun` ownership by authenticated user, issues a 1-hour scoped public access token
+- [x] Created `trigger/generate-spec.ts` — Zod-validated payload, builds structured Gemini prompt from nodes/edges/chat history, calls `generateText` via `runWithFailover`, updates run metadata for realtime tracking, returns plain Markdown output
+- [x] Verified full type-safety and successful clean Next.js production build compilation
+
+### Phase 30: Spec Persistence & Download
+- [x] Created `ProjectSpec` Prisma model (`prisma/models/project_spec.prisma`) with `id`, `projectId` (FK → Project with cascade delete), `filePath`, and `createdAt`
+- [x] Added `specs ProjectSpec[]` back-relation to `Project` model
+- [x] Ran migration `20260604220714_add_project_spec` and regenerated Prisma Client
+- [x] Updated `trigger/generate-spec.ts` to upload Markdown spec to Vercel Blob at `specs/{projectId}/{specId}.md`, persist `ProjectSpec` record with blob URL, and expose `specId` in run metadata and task output
+- [x] Created `GET /api/projects/[projectId]/specs/[specId]/download` — authenticates user, verifies project access via `checkProjectAccess`, confirms spec belongs to project, fetches private blob, streams as `Content-Disposition: attachment` Markdown file
+- [x] Verified full type-safety and successful clean Next.js production build (exit code 0)
+
+### Phase 31: Spec UI Integration
+- [x] Installed `react-markdown` and `remark-gfm` for client-side Markdown rendering
+- [x] Created `GET /api/projects/[projectId]/specs` — authenticates via `checkProjectAccess`, returns list of spec metadata (`id`, `filename`, `createdAt`) ordered newest-first
+- [x] Created `components/editor/spec-preview-modal.tsx` — Dialog-based modal that fetches spec content through the existing download endpoint (not Blob directly), renders it as styled Markdown with GFM tables/links, and exposes a Download action
+- [x] Updated Specs tab in `ai-sidebar.tsx`: replaced static demo card with a live spec list, added fetch-on-tab-activate pattern via `useCallback`/`useEffect`, wired clickable items to preview modal, per-item download button (revealed on hover), empty/loading/error states, and refresh control
+- [x] Wired `handleGenerateSpec` to the real `POST /api/ai/spec` endpoint with a 3-second delayed spec list refresh
+- [x] Verified zero TypeScript errors (`tsc --noEmit` exit code 0)
+
+### Phase 32: Spec Section Overhaul — One Spec Per Project
+- [x] Enforced one-spec-per-project in `trigger/generate-spec.ts` by deleting existing specs (blob + DB) before creating the new one
+- [x] Replaced multi-spec "Saved Specs" list in `ai-sidebar.tsx` with a single spec card per project
+- [x] Added spec generation run tracking via `useRealtimeRun` so the loading indicator stays active until the background task reaches a terminal state (not just the trigger request)
+- [x] Auto-refreshes the current spec card on successful generation completion
+- [x] Added `projectId`-change effect to clear spec state for proper project isolation
+- [x] Button dynamically shows "Regenerate Tech Spec" when a spec already exists
+- [x] Added live generation status indicator strip with pulsing dot during spec generation
+- [x] Fixed spec preview modal scrollability by replacing `ScrollArea` with native `overflow-y-auto` on the dialog body
+- [x] Removed unused `ScrollArea` import from `spec-preview-modal.tsx`
+- [x] Verified full type-safety with zero TypeScript errors (`tsc --noEmit` exit code 0)
+
+### Phase 33: Design Agent — Label Separation & Layout Improvement
+- [x] Rewrote the AI system prompt to strictly separate node labels (component names ONLY) from edge labels (protocol/relationship ONLY, max 1-3 words)
+- [x] Added explicit good/bad examples in the prompt to prevent verbose labels like "HTTPS/View Courses" or "Writes/Reads User Data"
+- [x] Increased minimum node spacing from 240-280px to 350px horizontal / 300px vertical to prevent edge labels from overlapping node boxes
+- [x] Added edge routing rules: distribute handles across different sides of the same node when it has multiple connections
+- [x] Added `labelOffsetPct` field to edge schema so the AI can stagger labels at 0.3/0.5/0.7 along a path instead of all sitting at the midpoint
+- [x] Updated `custom-edge.tsx` to support offset-based label positioning via `data.labelOffsetPct`
+- [x] Updated edge storage patch to persist `labelOffsetPct` alongside label in edge data
+- [x] Verified full type-safety with zero TypeScript errors (`tsc --noEmit` exit code 0)
+
 ## Next Steps
-- [ ] AI architecture generation background workflows using Trigger.dev
-
-
-
-
+- [ ] Continue with the next phase of system enhancements.

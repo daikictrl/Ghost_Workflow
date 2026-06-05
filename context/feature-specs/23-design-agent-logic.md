@@ -35,7 +35,7 @@ Implement the full AI design agent so a user prompt results in real-time updates
    - clear AI presence when the task finishes
 
 ## Dependencies
-   All packages are already installed.`GEMINI_API_KEY` is already in `.env.local`.
+   All packages are already installed.`GEMINI_API_KEY` is already in `.env`. I've provided 3 different Gemini API keys for this project. Due to the rapid rate limits on the API key, set up a failover mechanism to automatically switch to another key if one is rate-limited. The keys are ordered in the order of preference.
 
 ## Scope Limits
 

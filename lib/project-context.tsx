@@ -20,6 +20,7 @@ interface ProjectContextType {
   isLoading: boolean
   isAiSidebarOpen: boolean
   isTemplatesModalOpen: boolean
+  canvasSaveStatus: "saved" | "saving" | "error" | "idle"
   openDialog: (type: "create" | "rename" | "delete", project?: Project) => void
   closeDialog: () => void
   createProject: (name: string, slug: string) => Promise<void>
@@ -28,6 +29,7 @@ interface ProjectContextType {
   setAiSidebarOpen: (open: boolean) => void
   setTemplatesModalOpen: (open: boolean) => void
   toggleAiSidebar: () => void
+  setCanvasSaveStatus: (status: "saved" | "saving" | "error" | "idle") => void
 }
 
 const ProjectContext = createContext<ProjectContextType | undefined>(undefined)
@@ -46,6 +48,7 @@ export function ProjectProvider({
   const [isLoading, setIsLoading] = useState(false)
   const [isAiSidebarOpen, setIsAiSidebarOpen] = useState(false)
   const [isTemplatesModalOpen, setTemplatesModalOpen] = useState(false)
+  const [canvasSaveStatus, setCanvasSaveStatus] = useState<"saved" | "saving" | "error" | "idle">("saved")
 
   const toggleAiSidebar = () => setIsAiSidebarOpen((prev) => !prev)
 
@@ -158,6 +161,7 @@ export function ProjectProvider({
         isLoading,
         isAiSidebarOpen,
         isTemplatesModalOpen,
+        canvasSaveStatus,
         openDialog,
         closeDialog,
         createProject,
@@ -166,6 +170,7 @@ export function ProjectProvider({
         setAiSidebarOpen: setIsAiSidebarOpen,
         setTemplatesModalOpen,
         toggleAiSidebar,
+        setCanvasSaveStatus,
       }}
     >
       {children}
