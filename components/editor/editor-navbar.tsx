@@ -4,6 +4,7 @@ import React, { useState } from "react"
 import { UserButton } from "@clerk/nextjs"
 import { PanelLeftClose, PanelLeftOpen, Share2, Sparkles, Home, LayoutTemplate } from "lucide-react"
 import { useParams, useRouter } from "next/navigation"
+import Image from "next/image"
 
 import { Button } from "@/components/ui/button"
 import { cn } from "@/lib/utils"
@@ -49,6 +50,11 @@ function EditorNavbar({
           >
             <SidebarIcon />
           </Button>
+
+          <div className="flex items-center gap-2 select-none mr-2">
+            <Image src="/logo.webp" alt="Archi_Dev Logo" width={24} height={24} />
+            <span className="font-semibold text-sm hidden sm:inline-block">Archi_Dev</span>
+          </div>
 
           {currentProject && (
             <div className="flex items-center gap-2">

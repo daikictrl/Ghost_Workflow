@@ -36,7 +36,13 @@ export function getGoogleApiKeys(): string[] {
 
   // Fallback to the loaded process.env if keys list is empty
   if (keys.length === 0 && process.env.GOOGLE_AI_API_KEY) {
-    keys.push(process.env.GOOGLE_AI_API_KEY);
+    // Split by comma to support multiple keys in a single env var for cloud environments
+    const envKeys = process.env.GOOGLE_AI_API_KEY.split(",").map(k => k.trim()).filter(Boolean);
+    for (const key of envKeys) {
+      if (!keys.includes(key)) {
+        keys.push(key);
+      }
+    }
   }
 
   return keys;

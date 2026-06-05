@@ -17,6 +17,9 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   title: "Archi_Dev",
   description: "AI workflow editor",
+  icons: {
+    icon: "/logo.webp",
+  },
 };
 
 const clerkAppearance = {
