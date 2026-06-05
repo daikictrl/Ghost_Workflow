@@ -17,14 +17,14 @@ export async function generateMetadata(props: PageProps): Promise<Metadata> {
 
   if (!hasAccess || !project) {
     return {
-      title: "Access Denied | Ghost Editor",
+      title: "Access Denied | Archi_Dev",
       description: "You do not have access to this workspace.",
     }
   }
 
   return {
-    title: `${project.name} | Ghost Editor`,
-    description: project.description || "Ghost Editor collaborative workspace",
+    title: `${project.name} | Archi_Dev`,
+    description: project.description || "Archi_Dev collaborative workspace",
   }
 }
 

@@ -9445,7 +9445,7 @@ async function updatePresence(roomId, thinking, cursor) {
           thinking
         },
         userInfo: {
-          name: "Ghost AI",
+          name: "Archi_Dev",
           avatar: "https://avatar.vercel.sh/ai-agent",
           color: "#62C073"
         },
@@ -9484,7 +9484,7 @@ async function pushChatMessage(roomId, content) {
   if (!secretKey) return;
   const msg = {
     id: `chat-${Math.random().toString(36).substring(7)}`,
-    sender: "Ghost AI",
+    sender: "Archi_Dev",
     role: "assistant",
     content,
     timestamp: Date.now()
@@ -9515,7 +9515,7 @@ var designAgentTask = task({
     const { prompt, roomId } = payload;
     console.log(`[design-agent] Triggered with prompt: "${prompt}" inside room: "${roomId}"`);
     await updatePresence(roomId, true, { x: 100, y: 100 });
-    await pushStatus(roomId, "Ghost AI is starting to analyze your prompt...", "starting");
+    await pushStatus(roomId, "Archi_Dev is starting to analyze your prompt...", "starting");
     let currentNodes = {};
     let currentEdges = {};
     try {
@@ -9539,7 +9539,7 @@ var designAgentTask = task({
     try {
       await pushStatus(roomId, "Generating system design architecture layout...", "processing");
       const geminiResult = await runWithFailover(async (model) => {
-        const promptString = `You are a professional system architecture designer who is an expert in building distributed systems and software architecture with over 20 years of experience. You are named Ghost AI.
+        const promptString = `You are a professional system architecture designer who is an expert in building distributed systems and software architecture with over 20 years of experience. You are named Archi_Dev.
 Your primary objective is to produce highly refined, production-grade system designs.
 You generate visual architecture diagrams on a collaborative canvas.
 You must output a list of mutations (add, update, delete) to the canvas elements (nodes and edges) to fulfill the user's request.

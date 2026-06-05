@@ -112,7 +112,7 @@ async function updatePresence(
           thinking,
         },
         userInfo: {
-          name: "Ghost AI",
+          name: "Archi_Dev",
           avatar: "https://avatar.vercel.sh/ai-agent",
           color: "#62C073",
         },
@@ -158,7 +158,7 @@ async function pushChatMessage(roomId: string, content: string) {
 
   const msg: AiChatMessage = {
     id: `chat-${Math.random().toString(36).substring(7)}`,
-    sender: "Ghost AI",
+    sender: "Archi_Dev",
     role: "assistant",
     content,
     timestamp: Date.now(),
@@ -192,7 +192,7 @@ export const designAgentTask = task({
 
     // 1. Set presence to thinking at a default starting point
     await updatePresence(roomId, true, { x: 100, y: 100 });
-    await pushStatus(roomId, "Ghost AI is starting to analyze your prompt...", "starting");
+    await pushStatus(roomId, "Archi_Dev is starting to analyze your prompt...", "starting");
 
     // 2. Retrieve the current graph state from Liveblocks storage
     let currentNodes: Record<string, any> = {};
@@ -223,7 +223,7 @@ export const designAgentTask = task({
       await pushStatus(roomId, "Generating system design architecture layout...", "processing");
 
       const geminiResult = await runWithFailover(async (model) => {
-        const promptString = `You are a professional system architecture designer who is an expert in building distributed systems and software architecture with over 20 years of experience. You are named Ghost AI.
+        const promptString = `You are a professional system architecture designer who is an expert in building distributed systems and software architecture with over 20 years of experience. You are named Archi_Dev.
 Your primary objective is to produce highly refined, production-grade system designs.
 You generate visual architecture diagrams on a collaborative canvas.
 You must output a list of mutations (add, update, delete) to the canvas elements (nodes and edges) to fulfill the user's request.

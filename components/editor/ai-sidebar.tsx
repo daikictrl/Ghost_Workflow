@@ -107,7 +107,7 @@ export function AiSidebar({ projectId }: AiSidebarProps) {
         try {
           sendChatMessage({
             id: `chat-error-${Date.now()}`,
-            sender: "Ghost AI",
+            sender: "Archi_Dev",
             role: "assistant",
             content: errorContent,
             timestamp: Date.now(),
@@ -275,7 +275,7 @@ export function AiSidebar({ projectId }: AiSidebarProps) {
       try {
         sendChatMessage({
           id: `chat-error-${Date.now()}`,
-          sender: "Ghost AI",
+          sender: "Archi_Dev",
           role: "assistant",
           content: `Failed to start design generation: ${err.message || String(err)}`,
           timestamp: Date.now(),
@@ -366,7 +366,7 @@ export function AiSidebar({ projectId }: AiSidebarProps) {
           </div>
           <div className="flex flex-col">
             <h2 className="text-sm font-semibold tracking-tight text-copy-primary">AI Workspace</h2>
-            <p className="text-[10px] text-copy-muted">Collaborate with Ghost AI</p>
+            <p className="text-[10px] text-copy-muted">Collaborate with Archi_Dev</p>
           </div>
         </div>
         <Button
@@ -473,7 +473,7 @@ export function AiSidebar({ projectId }: AiSidebarProps) {
                           "text-[10px] font-semibold mb-0.5 ml-1 select-none",
                           isAssistant ? "text-accent-ai-text" : "text-copy-muted"
                         )}>
-                          {isAssistant ? "Ghost AI" : msg.sender}
+                          {isAssistant ? "Archi_Dev" : msg.sender}
                         </span>
                       )}
                       <div
@@ -500,7 +500,7 @@ export function AiSidebar({ projectId }: AiSidebarProps) {
                 {isCurrentlyWorking && (
                   <div className="flex flex-col max-w-[85%] min-w-0 self-start w-full">
                     <span className="text-[10px] font-semibold text-accent-ai-text mb-0.5 ml-1 select-none">
-                      Ghost AI
+                      Archi_Dev
                     </span>
                     <div className="bg-bg-elevated border border-surface-border rounded-2xl rounded-tl-none p-3 text-xs flex items-center gap-1 shadow-sm w-full min-w-0">
                       <span className="h-1.5 w-1.5 bg-accent-ai-text rounded-full animate-bounce [animation-delay:-0.3s]"></span>
@@ -530,7 +530,7 @@ export function AiSidebar({ projectId }: AiSidebarProps) {
                   <span className="relative inline-flex rounded-full h-2 w-2 bg-[#62C073]"></span>
                 </span>
                 <span className="text-[10px] text-[#62C073] font-medium leading-tight truncate">
-                  {validatedStatus?.text || "Ghost AI is starting..."}
+                  {validatedStatus?.text || "Archi_Dev is starting..."}
                 </span>
               </div>
             )}
@@ -613,7 +613,7 @@ export function AiSidebar({ projectId }: AiSidebarProps) {
                 <span className="relative inline-flex rounded-full h-2 w-2 bg-accent-ai"></span>
               </span>
               <span className="text-[10px] text-accent-ai-text font-medium leading-tight">
-                Ghost AI is generating your spec…
+                Archi_Dev is generating your spec…
               </span>
             </div>
           )}

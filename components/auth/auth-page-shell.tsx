@@ -16,7 +16,7 @@ function AuthPageShell({ title, tagline, children }: AuthPageShellProps) {
       <section className="hidden border-r border-border bg-card/40 px-10 py-10 lg:flex lg:flex-col lg:justify-between">
         <div className="space-y-16">
           <div>
-            <p className="text-sm font-semibold tracking-normal">Ghost AI</p>
+            <p className="text-sm font-semibold tracking-normal">Archi_Dev</p>
             <p className="mt-2 max-w-sm text-sm leading-6 text-muted-foreground">
               {tagline}
             </p>
