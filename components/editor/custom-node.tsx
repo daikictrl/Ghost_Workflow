@@ -239,17 +239,17 @@ export const CustomNode = memo(({ id, data, selected }: NodeProps<CanvasNode>) =
           onChange={handleChange}
           onKeyDown={handleKeyDown}
           onBlur={handleBlur}
-          className="nodrag nopan absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-20 w-[calc(100%-8px)] max-h-[calc(100%-8px)] bg-transparent text-center text-[12.1px] font-bold border-none outline-none resize-none focus:ring-0 focus:outline-none scrollbar-none"
+          className="nodrag nopan absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-20 w-[calc(100%-8px)] max-h-[calc(100%-8px)] bg-transparent text-center text-[13.5px] font-bold border-none outline-none resize-none focus:ring-0 focus:outline-none scrollbar-none"
           placeholder="Label"
           rows={1}
           style={{
             color: colorConfig.text,
-            lineHeight: "14px",
+            lineHeight: "16px",
           }}
         />
       ) : (
         <div 
-          className="relative z-10 text-[12.1px] leading-[14px] font-bold select-none overflow-hidden text-center w-[calc(100%-8px)] max-h-[calc(100%-8px)]"
+          className="relative z-10 text-[13.5px] leading-[16px] font-bold select-none overflow-hidden text-center w-[calc(100%-8px)] max-h-[calc(100%-8px)]"
           style={{
             display: "-webkit-box",
             WebkitLineClamp: 3,
@@ -259,7 +259,7 @@ export const CustomNode = memo(({ id, data, selected }: NodeProps<CanvasNode>) =
             wordBreak: "break-word",
           }}
         >
-          {data.label || <span className="opacity-40 italic text-[12.1px]">Label</span>}
+          {data.label || <span className="opacity-40 italic text-[13.5px]">Label</span>}
         </div>
       )}
 

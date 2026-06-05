@@ -19,19 +19,20 @@ export function CustomEdge({
   selected,
   style = {},
   data = {},
+  label,
 }: EdgeProps) {
   const { setEdges } = useReactFlow()
   const [isHovered, setIsHovered] = useState(false)
   const [isEditing, setIsEditing] = useState(false)
-  const [localValue, setLocalValue] = useState((data as any)?.label || "")
+  const [localValue, setLocalValue] = useState((label as string) || (data as any)?.label || "")
   const inputRef = useRef<HTMLInputElement>(null)
 
   // Keep local value in sync with incoming data updates
   useEffect(() => {
     if (!isEditing) {
-      setLocalValue((data as any)?.label || "")
+      setLocalValue((label as string) || (data as any)?.label || "")
     }
-  }, [data, isEditing])
+  }, [label, data, isEditing])
 
   // Auto focus and select input text when editing begins
   useEffect(() => {
@@ -41,7 +42,7 @@ export function CustomEdge({
     }
   }, [isEditing])
 
-  // Get orthogonal path and label position from React Flow's getSmoothStepPath
+  // Get orthogonal path and default label position from React Flow's getSmoothStepPath
   const [edgePath, labelX, labelY] = getSmoothStepPath({
     sourceX,
     sourceY,
@@ -72,6 +73,7 @@ export function CustomEdge({
         if (edge.id === id) {
           return {
             ...edge,
+            label: trimmedVal,
             data: {
               ...edge.data,
               label: trimmedVal,
@@ -91,18 +93,18 @@ export function CustomEdge({
       } else if (e.key === "Escape") {
         e.preventDefault()
         // Reset to original value and exit
-        setLocalValue((data as any)?.label || "")
+        setLocalValue((label as string) || (data as any)?.label || "")
         setIsEditing(false)
       }
     },
-    [data, handleSave]
+    [label, data, handleSave]
   )
 
   const handleBlur = useCallback(() => {
     handleSave()
   }, [handleSave])
 
-  const labelText = (data as any)?.label || ""
+  const labelText = (label as string) || (data as any)?.label || ""
 
   return (
     <>

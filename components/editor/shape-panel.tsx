@@ -22,12 +22,12 @@ interface ShapeTemplate {
 }
 
 const SHAPE_TEMPLATES: ShapeTemplate[] = [
-  { type: "rectangle", label: "Rectangle", icon: Square, width: 90, height: 50 },
-  { type: "diamond", label: "Diamond", icon: Diamond, width: 64, height: 64 },
-  { type: "circle", label: "Circle", icon: Circle, width: 50, height: 50 },
-  { type: "pill", label: "Pill", icon: Pill, width: 80, height: 36 },
-  { type: "cylinder", label: "Cylinder", icon: Cylinder, width: 56, height: 64 },
-  { type: "hexagon", label: "Hexagon", icon: Hexagon, width: 72, height: 64 },
+  { type: "rectangle", label: "Rectangle", icon: Square, width: 180, height: 80 },
+  { type: "diamond", label: "Diamond", icon: Diamond, width: 110, height: 110 },
+  { type: "circle", label: "Circle", icon: Circle, width: 90, height: 90 },
+  { type: "pill", label: "Pill", icon: Pill, width: 140, height: 60 },
+  { type: "cylinder", label: "Cylinder", icon: Cylinder, width: 110, height: 110 },
+  { type: "hexagon", label: "Hexagon", icon: Hexagon, width: 130, height: 110 },
 ]
 
 export function ShapePanel() {

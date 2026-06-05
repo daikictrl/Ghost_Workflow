@@ -29,7 +29,13 @@ export function ControlBar() {
 
   const [isDropdownOpen, setIsDropdownOpen] = useState(false)
   const [isEditing, setIsEditing] = useState(false)
+  const isEditingRef = useRef(false)
   const [inputValue, setInputValue] = useState("")
+
+  const setEditing = (val: boolean) => {
+    isEditingRef.current = val
+    setIsEditing(val)
+  }
 
   // Keep input value in sync with viewport zoom when NOT editing
   useEffect(() => {
@@ -43,7 +49,7 @@ export function ControlBar() {
     const handleClickOutside = (e: MouseEvent) => {
       if (containerRef.current && !containerRef.current.contains(e.target as Node)) {
         setIsDropdownOpen(false)
-        setIsEditing(false)
+        setEditing(false)
       }
     }
     document.addEventListener("mousedown", handleClickOutside)
@@ -51,7 +57,7 @@ export function ControlBar() {
   }, [])
 
   const handleInputFocus = () => {
-    setIsEditing(true)
+    setEditing(true)
     setIsDropdownOpen(true)
     // Strip '%' for editing and select the text
     setInputValue(`${Math.round(zoom * 100)}`)
@@ -68,32 +74,32 @@ export function ControlBar() {
   }
 
   const handleInputBlur = () => {
-    if (isEditing) {
+    if (isEditingRef.current) {
       applyZoomText(inputValue)
-      setIsEditing(false)
+      setEditing(false)
     }
   }
 
   const handleInputKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === "Enter") {
       e.preventDefault()
+      setEditing(false)
       applyZoomText(inputValue)
       inputRef.current?.blur()
       setIsDropdownOpen(false)
-      setIsEditing(false)
     } else if (e.key === "Escape") {
       e.preventDefault()
+      setEditing(false)
       setInputValue(`${Math.round(zoom * 100)}%`)
       inputRef.current?.blur()
       setIsDropdownOpen(false)
-      setIsEditing(false)
     }
   }
 
   const handlePresetClick = (presetValue: number) => {
+    setEditing(false)
     zoomTo(presetValue, { duration: 300 })
     setIsDropdownOpen(false)
-    setIsEditing(false)
     inputRef.current?.blur()
   }
 

@@ -1,0 +1,44 @@
+{
+  "configPath": "C:\\Users\\JOSEPH'S_PC\\Documents\\projects\\Money\\ghost\\.trigger\\tmp\\build-CWp649\\Documents\\projects\\Money\\ghost\\trigger.config.mjs",
+  "customConditions": [
+  ],
+  "prompts": [
+  ],
+  "queues": [
+  ],
+  "runtime": "node",
+  "runtimeVersion": "24.11.0",
+  "tasks": [
+    {
+      "entryPoint": "C:\\Users\\JOSEPH'S_PC\\Documents\\projects\\Money\\ghost\\.trigger\\tmp\\build-CWp649\\Documents\\projects\\Money\\ghost\\trigger\\design-agent.mjs",
+      "filePath": "trigger/design-agent.ts",
+      "id": "design-agent",
+      "maxDuration": 3600,
+      "retry": {
+        "factor": 2,
+        "maxAttempts": 3,
+        "maxTimeoutInMs": 10000,
+        "minTimeoutInMs": 1000
+      }
+    },
+    {
+      "entryPoint": "C:\\Users\\JOSEPH'S_PC\\Documents\\projects\\Money\\ghost\\.trigger\\tmp\\build-CWp649\\Documents\\projects\\Money\\ghost\\trigger\\generate-spec.mjs",
+      "filePath": "trigger/generate-spec.ts",
+      "id": "generate-spec",
+      "maxDuration": 3600,
+      "retry": {
+        "factor": 2,
+        "maxAttempts": 3,
+        "maxTimeoutInMs": 10000,
+        "minTimeoutInMs": 1000,
+        "randomize": true
+      }
+    }
+  ],
+  "timings": {
+    "lib/prisma.ts": 1780.8649,
+    "trigger/design-agent.ts": 1181.0981000000002,
+    "trigger/generate-spec.ts": 12.414200000000164
+  },
+  "workerEntryPoint": "C:\\Users\\JOSEPH'S_PC\\Documents\\projects\\Money\\ghost\\.trigger\\tmp\\build-CWp649\\AppData\\Local\\npm-cache\\_npx\\f51a09bd0abf5f10\\node_modules\\trigger.dev\\dist\\esm\\entryPoints\\dev-run-worker.mjs"
+}

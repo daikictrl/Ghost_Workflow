@@ -8,6 +8,7 @@ interface UseKeyboardShortcutsProps {
   redo: () => void
   canUndo: boolean
   canRedo: boolean
+  deleteSelected: () => void
 }
 
 export function useKeyboardShortcuts({
@@ -16,6 +17,7 @@ export function useKeyboardShortcuts({
   redo,
   canUndo,
   canRedo,
+  deleteSelected,
 }: UseKeyboardShortcutsProps) {
   const { zoom } = useViewport()
 
@@ -78,11 +80,18 @@ export function useKeyboardShortcuts({
         reactFlowInstance.zoomTo(zoom - 0.1, { duration: 300 })
         return
       }
+
+      // Delete selected: Backspace or Delete
+      if (event.key === "Backspace" || event.key === "Delete") {
+        event.preventDefault()
+        deleteSelected()
+        return
+      }
     }
 
     window.addEventListener("keydown", handleKeyDown)
     return () => {
       window.removeEventListener("keydown", handleKeyDown)
     }
-  }, [reactFlowInstance, undo, redo, canUndo, canRedo, zoom])
+  }, [reactFlowInstance, undo, redo, canUndo, canRedo, deleteSelected, zoom])
 }
